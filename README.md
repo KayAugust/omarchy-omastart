@@ -43,6 +43,13 @@ open the app. A few examples:
 | Herdr | `omarchy-launch-terminal-herdr` |
 | An app needing a specific GTK theme | `env GTK_THEME=Adwaita:light dbeaver` |
 
+## Dependencies
+
+None beyond Omarchy/Hyprland itself. Launching uses `hyprctl dispatch`
+(built into Hyprland) — no extra packages to install. Whatever you put in
+a workspace's **Command** field needs to already be installed, same as
+running it in a terminal.
+
 ## Language
 
 The panel's text follows the machine's configured language
@@ -53,7 +60,7 @@ other locale. See `Strings.js` to add more.
 ## Remove
 
 ```sh
-omarchy plugin remove dvr.omastart
+omarchy plugin remove io.github.diegovrocha.omastart
 ```
 
 Your saved workspaces/apps stay at
