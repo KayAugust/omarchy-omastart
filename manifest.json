@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "dvr.omastart",
+  "name": "Omastart",
+  "version": "1.0.0",
+  "author": "Diêgo Vieira",
+  "license": "MIT",
+  "description": "Configurable per-workspace app launcher with a startup prompt",
+  "kinds": ["bar-widget"],
+  "entryPoints": {
+    "barWidget": "Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "Omastart",
+    "description": "Launch your configured apps into their workspaces, with a prompt on shell start",
+    "category": "Productivity",
+    "allowMultiple": false
+  }
+}
