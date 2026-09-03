@@ -17,12 +17,25 @@ Panel {
   readonly property var s: Strings.forLocale(Qt.locale().name)
 
   readonly property string configPath: Quickshell.env("HOME") + "/.local/state/omarchy/settings/omastart.json"
+  // Last calendar date (yyyy-MM-dd) the startup prompt was shown, persisted
+  // to disk so it survives shell restarts - promptedThisSession used to be
+  // an in-memory flag, which meant "once per session" was really "every
+  // time the shell process restarts" since the process itself is short-lived.
+  readonly property string promptStatePath: Quickshell.env("HOME") + "/.local/state/omarchy/settings/omastart_last_prompt.txt"
   property var config: Model.defaultConfig()
-  // Fires the startup prompt once per shell process lifetime, right when
-  // this widget's QML is instantiated (shell start / plugin enable) -
-  // independent of whether the panel has ever been opened by a click.
-  property bool promptedThisSession: false
   property string newWorkspaceLabel: ""
+
+  function todayString() {
+    return Qt.formatDate(new Date(), "yyyy-MM-dd")
+  }
+
+  function maybePromptForToday(lastPromptDate) {
+    var today = root.todayString()
+    if (lastPromptDate.trim() !== today) {
+      promptStateFile.setText(today)
+      Qt.callLater(root.open)
+    }
+  }
 
   function saveConfig() {
     configFile.setText(Model.serializeConfig(root.config))
@@ -73,16 +86,19 @@ Panel {
     }
   }
 
+  FileView {
+    id: promptStateFile
+    path: root.promptStatePath
+    watchChanges: false
+    atomicWrites: true
+    printErrors: false
+    onLoaded: root.maybePromptForToday(text())
+    onLoadFailed: root.maybePromptForToday("")
+  }
+
   visible: true
   implicitWidth: button.implicitWidth
   implicitHeight: button.implicitHeight
-
-  Component.onCompleted: {
-    if (!root.promptedThisSession) {
-      root.promptedThisSession = true
-      Qt.callLater(root.open)
-    }
-  }
 
   // Filled lightning bolt once at least one app is configured somewhere;
   // outline while empty. Nerd Font (Material Design Icons) glyphs, not
